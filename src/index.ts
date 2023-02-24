@@ -3,11 +3,12 @@ import EventEmitter from './EventEmitter';
 interface TokenManagerContructor {
   getAccessToken: () => Promise<string>;
   getRefreshToken: () => Promise<string>;
+  isValidToken: (token: string) => Promise<boolean>;
   isValidRefreshToken: (refresh_token: string) => Promise<boolean>;
   executeRefreshToken: () => Promise<{ token: string; refresh_token: string }>;
   onRefreshTokenSuccess: ({ token, refresh_token }: { token: string; refresh_token: string }) => void;
   onInvalidRefreshToken: () => void;
-  refreshTimeout: number;
+  refreshTimeout?: number;
 }
 
 export default class TokenManager {
@@ -19,11 +20,13 @@ export default class TokenManager {
   private refreshTimeout: number = 3000;
   private isValidRefreshToken;
   private onRefreshTokenSuccess;
+  private isValidToken;
 
   constructor({
     getRefreshToken,
     getAccessToken,
-    refreshTimeout = 3000,
+    isValidToken,
+    refreshTimeout = 30000,
     executeRefreshToken,
     onInvalidRefreshToken,
     onRefreshTokenSuccess,
@@ -36,6 +39,11 @@ export default class TokenManager {
     this.onInvalidRefreshToken = onInvalidRefreshToken;
     this.isValidRefreshToken = isValidRefreshToken;
     this.onRefreshTokenSuccess = onRefreshTokenSuccess;
+    if (isValidToken) {
+      this.isValidToken = isValidToken;
+    } else {
+      this.isValidToken = this.isTokenValid;
+    }
 
     event.on('refreshTokenExpired', () => {
       this.onInvalidRefreshToken && this.onInvalidRefreshToken();
@@ -50,7 +58,7 @@ export default class TokenManager {
             event.emit('refreshTokenExpired');
           } else {
             const token = await getAccessToken();
-            const isValid: boolean = await this.isTokenValid();
+            const isValid: boolean = await this.isValidToken(token);
             if (isValid) {
               event.emit('refreshDone', token);
             } else {
@@ -115,10 +123,8 @@ export default class TokenManager {
     }
   }
 
-  async isTokenValid() {
+  async isTokenValid(token: string) {
     try {
-      const token = await this.getAccessToken();
-
       const decoded = this.parseJwt(token);
       const { exp } = decoded;
 

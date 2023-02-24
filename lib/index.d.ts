@@ -1,6 +1,7 @@
 interface TokenManagerContructor {
     getAccessToken: () => Promise<string>;
     getRefreshToken: () => Promise<string>;
+    isValidToken: (token: string) => Promise<boolean>;
     isValidRefreshToken: (refresh_token: string) => Promise<boolean>;
     executeRefreshToken: () => Promise<{
         token: string;
@@ -11,20 +12,21 @@ interface TokenManagerContructor {
         refresh_token: string;
     }) => void;
     onInvalidRefreshToken: () => void;
-    refreshTimeout: number;
+    refreshTimeout?: number;
 }
 export default class TokenManager {
     private event;
-    private getAccessToken;
-    private getRefreshToken;
+    getAccessToken: () => Promise<string>;
+    getRefreshToken: () => Promise<string>;
     private onInvalidRefreshToken;
     private isRefreshing;
     private refreshTimeout;
     private isValidRefreshToken;
     private onRefreshTokenSuccess;
-    constructor({ getRefreshToken, getAccessToken, refreshTimeout, executeRefreshToken, onInvalidRefreshToken, onRefreshTokenSuccess, isValidRefreshToken, }: TokenManagerContructor);
+    private isValidToken;
+    constructor({ getRefreshToken, getAccessToken, isValidToken, refreshTimeout, executeRefreshToken, onInvalidRefreshToken, onRefreshTokenSuccess, isValidRefreshToken, }: TokenManagerContructor);
     getToken(): Promise<unknown>;
     parseJwt(token: string): any;
-    isTokenValid(): Promise<boolean>;
+    isTokenValid(token: string): Promise<boolean>;
 }
 export {};
