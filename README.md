@@ -126,3 +126,13 @@ export const privateRequest = async (request: any, suffixUrl: string, configs?: 
 // Use
 privateRequest(axios.get, 'example', { data: { foo: 'bar' } });
 ```
+
+## Compare
+
+- TokenManager
+
+![Token manager](./assets/token-manager.gif)
+
+- Axios Interceptor
+
+![Token manager](./assets/axios.gif)
