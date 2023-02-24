@@ -14,6 +14,10 @@
     "type": "git",
     "url": "git+https://github.com/namnh240795/token-manager.git"
   },
+  "keywords": [
+    "refresh token",
+    "handle refresh token"
+  ],
   "author": "",
   "license": "ISC",
   "bugs": {
