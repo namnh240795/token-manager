@@ -10,7 +10,7 @@ This package help you do refresh token brainlessly
 
 ```javascript
 import { extend } from 'umi-request';
-import TokenManager from '.';
+import TokenManager, { injectBearer, parseJwt } from 'brainless-token-manager';
 
 // Can implement by umi-request, axios, fetch....
 export const requestNew = extend({
@@ -22,50 +22,6 @@ export const requestNew = extend({
     throw error?.data || error?.response;
   },
 });
-
-const parseJwt = (token: string) => {
-  try {
-    return JSON.parse(atob(token.split('.')[1]));
-  } catch (e) {
-    return null;
-  }
-};
-
-const injectBearer = (token: string, configs: any) => {
-  if (!configs) {
-    return {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    };
-  }
-
-  if (configs?.headers?.Authorization) {
-    return {
-      ...configs,
-      headers: {
-        ...configs.headers,
-      },
-    };
-  }
-
-  if (configs?.headers) {
-    return {
-      ...configs,
-      headers: {
-        ...configs.headers,
-        Authorization: `Bearer ${token}`,
-      },
-    };
-  }
-
-  return {
-    ...configs,
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
-  };
-};
 
 const tokenManager = new TokenManager({
   getAccessToken: async () => {
@@ -145,11 +101,13 @@ const tokenManager = new TokenManager({
 
 export const privateRequest = async (request: any, suffixUrl: string, configs?: any) => {
   try {
-    const token: string = await tokenManager.getToken();
+    const token: string = await tokenManager.getAccessToken();
 
     return request(suffixUrl, injectBearer(token, configs));
   } catch (error) {
     console.log(error);
   }
 };
+
+privateRequest(axios.get, 'example', { data: { foo: 'bar' } });
 ```

@@ -1,6 +1,6 @@
 import EventEmitter from './EventEmitter';
 
-interface TokenManagerContructor {
+export interface TokenManagerContructor {
   getAccessToken: () => Promise<string>;
   getRefreshToken: () => Promise<string>;
   isValidToken: (token: string) => Promise<boolean>;
@@ -10,6 +10,50 @@ interface TokenManagerContructor {
   onInvalidRefreshToken: () => void;
   refreshTimeout?: number;
 }
+
+export const parseJwt = (token: string) => {
+  try {
+    return JSON.parse(atob(token.split('.')[1]));
+  } catch (e) {
+    return null;
+  }
+};
+
+export const injectBearer = (token: string, configs: any) => {
+  if (!configs) {
+    return {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    };
+  }
+
+  if (configs?.headers?.Authorization) {
+    return {
+      ...configs,
+      headers: {
+        ...configs.headers,
+      },
+    };
+  }
+
+  if (configs?.headers) {
+    return {
+      ...configs,
+      headers: {
+        ...configs.headers,
+        Authorization: `Bearer ${token}`,
+      },
+    };
+  }
+
+  return {
+    ...configs,
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  };
+};
 
 export default class TokenManager {
   private event: EventEmitter;
@@ -115,17 +159,9 @@ export default class TokenManager {
     });
   }
 
-  parseJwt(token: string) {
-    try {
-      return JSON.parse(atob(token.split('.')[1]));
-    } catch (e) {
-      return null;
-    }
-  }
-
   async isTokenValid(token: string) {
     try {
-      const decoded = this.parseJwt(token);
+      const decoded = parseJwt(token);
       const { exp } = decoded;
 
       const currentTime = Date.now() / 1000;
