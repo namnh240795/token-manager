@@ -1,12 +1,56 @@
-### Introduction
+# Brainless Token Management :)
+
+
+[![npm version](https://badge.fury.io/js/brainless-token-manager.svg)](https://badge.fury.io/js/brainless-token-manager) [![npm](https://img.shields.io/npm/dt/brainless-token-manager.svg?logo=npm)](https://www.npmjs.com/package/brainless-token-manager) [![npm](https://img.shields.io/bundlephobia/minzip/brainless-token-manager)](https://www.npmjs.com/package/brainless-token-manager)
+[![All Contributors](https://img.shields.io/badge/all_contributors-1-orange.svg)](#contributors-)
+
+[Live Demo](https://reactjs-handle-refresh-token.vercel.app/)
+
+## Installation
+
+[![NPM](https://nodei.co/npm/brainless-token-manager.png?compact=true)](https://nodei.co/npm/brainless-token-manager/)
+
+#### To install the latest stable version:
+
+```
+npm install --save brainless-token-manager
+
+or
+
+yarn add brainless-token-manager
+```
+
+
+## Introduction
 
 This package help you do refresh token brainlessly
 
-#### Flow
+## Flow
 
 - Checking refresh token -> expired -> onInvalidRefreshToken -> clear token on your storage -> logout
 - Valid token -> return token -> run as normal
 - Token in valid -> refresh token -> onRefreshToken success -> save token and refresh token to storage -> perform request
+
+## Super easy to use
+
+### API
+```typescript
+interface TokenManagerContructor {
+  getAccessToken: () => Promise<string>;
+  getRefreshToken: () => Promise<string>;
+  isValidToken: (token: string) => Promise<boolean>;
+  isValidRefreshToken: (refresh_token: string) => Promise<boolean>;
+  executeRefreshToken: () => Promise<{ token: string; refresh_token: string }>;
+  onRefreshTokenSuccess: ({ token, refresh_token }: { token: string; refresh_token: string }) => void;
+  onInvalidRefreshToken: () => void;
+  refreshTimeout?: number;
+}
+
+// Works fine with JWT
+// if you use other tokens JWT. you need to initialize isValidToken and isValidRefreshToken
+```
+
+### Example with umi-request
 
 ```javascript
 import { extend } from 'umi-request';
@@ -14,7 +58,7 @@ import TokenManager, { injectBearer, parseJwt } from 'brainless-token-manager';
 
 // Can implement by umi-request, axios, fetch....
 export const requestNew = extend({
-  prefix: process.env.VITE_APP_API,
+  prefix: 'APP_ENDPOINT_URL_HERE',
   headers: {
     'Content-Type': 'application/json',
   },
@@ -37,38 +81,6 @@ const tokenManager = new TokenManager({
     // Logout, redirect to login
     localStorage.removeItem('accessToken');
     localStorage.removeItem('refreshToken');
-  },
-  isValidToken: async (token) => {
-    try {
-      const decoded = parseJwt(token);
-      const { exp } = decoded;
-
-      const currentTime = Date.now() / 1000;
-
-      if (exp - 5 > currentTime) {
-        return true;
-      }
-
-      return false;
-    } catch (error) {
-      return false;
-    }
-  },
-  isValidRefreshToken: async (refreshToken) => {
-    try {
-      const decoded = parseJwt(refreshToken);
-      const { exp } = decoded;
-
-      const currentTime = Date.now() / 1000;
-
-      if (exp - 5 > currentTime) {
-        return true;
-      }
-
-      return false;
-    } catch (error) {
-      return false;
-    }
   },
   executeRefreshToken: async () => {
     const refreshToken = localStorage.getItem('refreshToken');
@@ -100,14 +112,11 @@ const tokenManager = new TokenManager({
 });
 
 export const privateRequest = async (request: any, suffixUrl: string, configs?: any) => {
-  try {
-    const token: string = await tokenManager.getAccessToken();
+  const token: string = await tokenManager.getAccessToken();
 
-    return request(suffixUrl, injectBearer(token, configs));
-  } catch (error) {
-    console.log(error);
-  }
+  return request(suffixUrl, injectBearer(token, configs));
 };
 
+// Use
 privateRequest(axios.get, 'example', { data: { foo: 'bar' } });
 ```
