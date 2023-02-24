@@ -58,7 +58,7 @@ import TokenManager, { injectBearer, parseJwt } from 'brainless-token-manager';
 
 // Can implement by umi-request, axios, fetch....
 export const requestNew = extend({
-  prefix: 'APP_URL_HERE',
+  prefix: 'APP_ENDPOINT_URL_HERE',
   headers: {
     'Content-Type': 'application/json',
   },
