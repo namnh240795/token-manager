@@ -3,7 +3,7 @@
   "version": "1.2.0",
   "description": "",
   "main": "lib/index.js",
-  "module": "lib/index.es.js",
+  "typings": "lib/index.d.ts",
   "scripts": {
     "format": "prettier --write \"src/**/*.ts\" \"src/**/*.js\"",
     "lint": "tslint -p tsconfig.json",
