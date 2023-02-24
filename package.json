@@ -1,5 +1,5 @@
 {
-  "name": "token-manager",
+  "name": "brainless-token-manager",
   "version": "1.0.0",
   "description": "",
   "main": "lib/index.js",
