@@ -12,8 +12,8 @@ interface TokenManagerContructor {
 
 export default class TokenManager {
   private event: EventEmitter;
-  private getAccessToken;
-  private getRefreshToken;
+  public getAccessToken;
+  public getRefreshToken;
   private onInvalidRefreshToken;
   private isRefreshing: boolean = false;
   private refreshTimeout: number = 3000;
