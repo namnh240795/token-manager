@@ -3,10 +3,16 @@ import EventEmitter from './EventEmitter';
 export interface TokenManagerContructor {
   getAccessToken: () => Promise<string>;
   getRefreshToken: () => Promise<string>;
-  isValidToken: (token: string) => Promise<boolean>;
-  isValidRefreshToken: (refresh_token: string) => Promise<boolean>;
+  isValidToken?: (token: string) => Promise<boolean>;
+  isValidRefreshToken?: (refresh_token: string) => Promise<boolean>;
   executeRefreshToken: () => Promise<{ token: string; refresh_token: string }>;
-  onRefreshTokenSuccess: ({ token, refresh_token }: { token: string; refresh_token: string }) => void;
+  onRefreshTokenSuccess: ({
+    token,
+    refresh_token,
+  }: {
+    token: string;
+    refresh_token: string;
+  }) => void;
   onInvalidRefreshToken: () => void;
   refreshTimeout?: number;
 }
@@ -61,7 +67,7 @@ export default class TokenManager {
   public getRefreshToken;
   private onInvalidRefreshToken;
   private isRefreshing: boolean = false;
-  private refreshTimeout: number = 3000;
+  private refreshTimeout: number = 30000;
   private isValidRefreshToken;
   private onRefreshTokenSuccess;
   private isValidToken;
@@ -81,12 +87,18 @@ export default class TokenManager {
     this.getAccessToken = getAccessToken;
     this.getRefreshToken = getRefreshToken;
     this.onInvalidRefreshToken = onInvalidRefreshToken;
-    this.isValidRefreshToken = isValidRefreshToken;
     this.onRefreshTokenSuccess = onRefreshTokenSuccess;
+
     if (isValidToken) {
       this.isValidToken = isValidToken;
     } else {
       this.isValidToken = this.isTokenValid;
+    }
+
+    if (isValidRefreshToken) {
+      this.isValidRefreshToken = isValidRefreshToken;
+    } else {
+      this.isValidRefreshToken = this.isTokenValid;
     }
 
     event.on('refreshTokenExpired', () => {
