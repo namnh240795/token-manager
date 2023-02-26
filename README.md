@@ -1,6 +1,5 @@
 # Brainless Token Management :)
 
-
 [![npm version](https://badge.fury.io/js/brainless-token-manager.svg)](https://badge.fury.io/js/brainless-token-manager) [![npm](https://img.shields.io/npm/dt/brainless-token-manager.svg?logo=npm)](https://www.npmjs.com/package/brainless-token-manager) [![npm](https://img.shields.io/bundlephobia/minzip/brainless-token-manager)](https://www.npmjs.com/package/brainless-token-manager)
 [![All Contributors](https://img.shields.io/badge/all_contributors-1-orange.svg)](#contributors-)
 
@@ -20,7 +19,6 @@ or
 yarn add brainless-token-manager
 ```
 
-
 ## Introduction
 
 This package help you do refresh token brainlessly
@@ -34,6 +32,7 @@ This package help you do refresh token brainlessly
 ## Super easy to use
 
 ### API
+
 ```typescript
 interface TokenManagerContructor {
   getAccessToken: () => Promise<string>;
@@ -49,6 +48,10 @@ interface TokenManagerContructor {
 // Works fine with JWT
 // if you use other tokens JWT. you need to initialize isValidToken and isValidRefreshToken
 ```
+
+### Flow
+
+![Demo](./gifs/image.png)
 
 ### Example with umi-request
 
