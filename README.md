@@ -9,10 +9,10 @@
 
 [![NPM](https://nodei.co/npm/brainless-token-manager.png?compact=true)](https://nodei.co/npm/brainless-token-manager/)
 
-#### To install the latest stable version:
+## To install the latest stable version:
 
 ```
-npm install --save brainless-token-manager
+npm install --save brainless-token-manager@latest
 
 or
 
@@ -21,7 +21,7 @@ yarn add brainless-token-manager
 
 ## Introduction
 
-This package help you do refresh token brainlessly
+- This package help you do refresh token brainlessly
 
 ## Flow
 
@@ -34,19 +34,25 @@ This package help you do refresh token brainlessly
 ### API
 
 ```typescript
+// Works fine with JWT
+// if you use other tokens JWT. you need to initialize isValidToken and isValidRefreshToken
+
 interface TokenManagerContructor {
   getAccessToken: () => Promise<string>;
   getRefreshToken: () => Promise<string>;
-  isValidToken: (token: string) => Promise<boolean>;
-  isValidRefreshToken: (refresh_token: string) => Promise<boolean>;
   executeRefreshToken: () => Promise<{ token: string; refresh_token: string }>;
   onRefreshTokenSuccess: ({ token, refresh_token }: { token: string; refresh_token: string }) => void;
   onInvalidRefreshToken: () => void;
+  isValidToken?: (token: string) => Promise<boolean>;
+  isValidRefreshToken?: (refresh_token: string) => Promise<boolean>;
   refreshTimeout?: number;
 }
 
-// Works fine with JWT
-// if you use other tokens JWT. you need to initialize isValidToken and isValidRefreshToken
+interface TokenManagerInstance {
+  getToken: () => Promise<string>
+}
+
+const tokenManagerInstance: TokenManagerInstance = new TokenManager(options: TokenManagerContructor);
 ```
 
 ### Flow
@@ -115,7 +121,7 @@ const tokenManager = new TokenManager({
 });
 
 export const privateRequest = async (request: any, suffixUrl: string, configs?: any) => {
-  const token: string = await tokenManager.getAccessToken();
+  const token: string = await tokenManager.getToken();
 
   return request(suffixUrl, injectBearer(token, configs));
 };
@@ -123,3 +129,13 @@ export const privateRequest = async (request: any, suffixUrl: string, configs?: 
 // Use
 privateRequest(axios.get, 'example', { data: { foo: 'bar' } });
 ```
+
+## Compare
+
+- TokenManager
+
+![Token manager](./assets/token-manager.gif)
+
+- Axios Interceptor
+
+![Token manager](./assets/axios.gif)
