@@ -57,7 +57,7 @@ const tokenManagerInstance: TokenManagerInstance = new TokenManager(options: Tok
 
 ### Flow
 
-![Demo](./gifs/image.png)
+![Demo](./img/image.png)
 
 ### Example with umi-request
 
