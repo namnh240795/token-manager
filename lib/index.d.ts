@@ -1,13 +1,13 @@
 export interface TokenManagerContructor {
     getAccessToken: () => Promise<string>;
     getRefreshToken: () => Promise<string>;
-    isValidToken: (token: string) => Promise<boolean>;
-    isValidRefreshToken: (refresh_token: string) => Promise<boolean>;
+    isValidToken?: (token: string) => Promise<boolean>;
+    isValidRefreshToken?: (refresh_token: string) => Promise<boolean>;
     executeRefreshToken: () => Promise<{
         token: string;
         refresh_token: string;
     }>;
-    onRefreshTokenSuccess: ({ token, refresh_token }: {
+    onRefreshTokenSuccess: ({ token, refresh_token, }: {
         token: string;
         refresh_token: string;
     }) => void;
