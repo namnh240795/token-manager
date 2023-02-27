@@ -6,32 +6,39 @@ export interface TokenManagerContructor {
   isValidToken?: (token: string) => Promise<boolean>;
   isValidRefreshToken?: (refresh_token: string) => Promise<boolean>;
   executeRefreshToken: () => Promise<{ token: string; refresh_token: string }>;
-  onRefreshTokenSuccess: ({
-    token,
-    refresh_token,
-  }: {
-    token: string;
-    refresh_token: string;
-  }) => void;
+  onRefreshTokenSuccess: ({ token, refresh_token }: { token: string; refresh_token: string }) => void;
   onInvalidRefreshToken: () => void;
   refreshTimeout?: number;
 }
 
-export const parseJwt = (token: string) => {
+type TInjectBearerConfigs = {
+  headers?: { Authorization?: string } & {
+    [K in string]: any;
+  };
+};
+
+type TParseJwt = { exp: number } & {
+  [K in string]: any;
+};
+
+export const parseJwt = (token: string): Partial<TParseJwt> => {
   try {
     return JSON.parse(atob(token.split('.')[1]));
   } catch (e) {
-    return null;
+    return {};
   }
 };
 
-export const injectBearer = (token: string, configs: any) => {
+export const injectBearer = <TToken extends string, TConfig extends TInjectBearerConfigs>(
+  token: TToken,
+  configs?: TConfig,
+): TConfig => {
   if (!configs) {
     return {
       headers: {
         Authorization: `Bearer ${token}`,
       },
-    };
+    } as TConfig;
   }
 
   if (configs?.headers?.Authorization) {
@@ -154,7 +161,7 @@ export default class TokenManager {
     this.event = event;
   }
 
-  getToken() {
+  getToken(): Promise<string | unknown> {
     return new Promise((resolve) => {
       let isCalled = false;
 
@@ -178,7 +185,7 @@ export default class TokenManager {
 
       const currentTime = Date.now() / 1000;
 
-      if (exp - 5 > currentTime) {
+      if (exp && exp - 5 > currentTime) {
         return true;
       }
 
