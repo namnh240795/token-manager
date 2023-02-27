@@ -1,5 +1,11 @@
 # brainless-token-manager
 
+## 1.2.8
+
+### Patch Changes
+
+- 8bc5f5e: Update ci
+
 ## 1.2.6
 
 ### Patch Changes
