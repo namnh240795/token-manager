@@ -15,21 +15,34 @@ export interface TokenManagerInstance {
   getToken: () => Promise<string>;
 }
 
-export const parseJwt = (token: string) => {
+export type TInjectBearerConfigs = {
+  headers?: { Authorization?: string } & {
+    [K in string]: any;
+  };
+};
+
+export type TParseJwt = { exp: number } & {
+  [K in string]: any;
+};
+
+export const parseJwt = (token: string): Partial<TParseJwt> => {
   try {
     return JSON.parse(atob(token.split('.')[1]));
   } catch (e) {
-    return null;
+    return {};
   }
 };
 
-export const injectBearer = (token: string, configs: any) => {
+export const injectBearer = <TToken extends string, TConfig extends TInjectBearerConfigs>(
+  token: TToken,
+  configs?: TConfig,
+): TConfig => {
   if (!configs) {
     return {
       headers: {
         Authorization: `Bearer ${token}`,
       },
-    };
+    } as TConfig;
   }
 
   if (configs?.headers?.Authorization) {
@@ -152,7 +165,7 @@ export default class TokenManager {
     this.event = event;
   }
 
-  getToken() {
+  getToken(): Promise<string | unknown> {
     return new Promise((resolve) => {
       let isCalled = false;
 
@@ -176,7 +189,7 @@ export default class TokenManager {
 
       const currentTime = Date.now() / 1000;
 
-      if (exp - 5 > currentTime) {
+      if (exp && exp - 5 > currentTime) {
         return true;
       }
 
