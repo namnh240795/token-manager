@@ -36,6 +36,7 @@ yarn add brainless-token-manager
 ```typescript
 // Works fine with JWT
 // if you use other tokens JWT. you need to initialize isValidToken and isValidRefreshToken
+import { TokenManagerContructor, TokenManagerInstance } from 'brainless-token-manager';
 
 interface TokenManagerContructor {
   getAccessToken: () => Promise<string>;

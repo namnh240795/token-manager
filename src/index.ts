@@ -6,15 +6,13 @@ export interface TokenManagerContructor {
   isValidToken?: (token: string) => Promise<boolean>;
   isValidRefreshToken?: (refresh_token: string) => Promise<boolean>;
   executeRefreshToken: () => Promise<{ token: string; refresh_token: string }>;
-  onRefreshTokenSuccess: ({
-    token,
-    refresh_token,
-  }: {
-    token: string;
-    refresh_token: string;
-  }) => void;
+  onRefreshTokenSuccess: ({ token, refresh_token }: { token: string; refresh_token: string }) => void;
   onInvalidRefreshToken: () => void;
   refreshTimeout?: number;
+}
+
+export interface TokenManagerInstance {
+  getToken: () => Promise<string>;
 }
 
 export const parseJwt = (token: string) => {
