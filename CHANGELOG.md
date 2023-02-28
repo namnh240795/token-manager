@@ -1,5 +1,11 @@
 # brainless-token-manager
 
+## 1.2.10
+
+### Patch Changes
+
+- 35dadd1: Update type
+
 ## 1.2.8
 
 ### Patch Changes
