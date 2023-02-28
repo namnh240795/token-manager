@@ -1,5 +1,11 @@
 # brainless-token-manager
 
+## 1.2.11
+
+### Patch Changes
+
+- bb32c04: Update readme
+
 ## 1.2.10
 
 ### Patch Changes
