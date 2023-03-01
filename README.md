@@ -116,7 +116,7 @@ const tokenManager = new TokenManager({
 });
 
 export const privateRequest = async (request: any, suffixUrl: string, configs?: any) => {
-  const token: string = await tokenManager.getAccessToken();
+  const token: string = await tokenManager.getToken();
 
   return request(suffixUrl, injectBearer(token, configs));
 };
