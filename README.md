@@ -122,7 +122,7 @@ export const privateRequest = async (request: any, suffixUrl: string, configs?: 
 };
 
 // Use
-privateRequest(axios.get, 'example', { data: { foo: 'bar' } });
+privateRequest(axios.get, '/example', { params: { 'work': 'ReactNative' } } });
 ```
 
 ## Compare
