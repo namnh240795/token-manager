@@ -47,11 +47,7 @@ interface TokenManagerContructor {
   refreshTimeout?: number;
 }
 
-interface TokenManagerInstance {
-  getToken: () => Promise<string>
-}
-
-const tokenManagerInstance: TokenManagerInstance = new TokenManager(options: TokenManagerContructor);
+const tokenManagerInstance: TokenManager = new TokenManager(options: TokenManagerContructor);
 ```
 
 ### Flow
@@ -120,7 +116,7 @@ const tokenManager = new TokenManager({
 });
 
 export const privateRequest = async (request: any, suffixUrl: string, configs?: any) => {
-  const token: string = await tokenManager.getToken();
+  const token: string = await tokenManager.getAccessToken();
 
   return request(suffixUrl, injectBearer(token, configs));
 };
