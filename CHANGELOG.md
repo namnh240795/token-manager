@@ -1,5 +1,11 @@
 # brainless-token-manager
 
+## 1.2.12
+
+### Patch Changes
+
+- c2c6cc7: update documentation
+
 ## 1.2.11
 
 ### Patch Changes
