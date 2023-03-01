@@ -1,5 +1,11 @@
 # brainless-token-manager
 
+## 1.2.14
+
+### Patch Changes
+
+- f918c6c: Support RN
+
 ## 1.2.13
 
 ### Patch Changes
