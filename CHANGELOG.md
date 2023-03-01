@@ -1,5 +1,11 @@
 # brainless-token-manager
 
+## 1.2.13
+
+### Patch Changes
+
+- 6c3f647: Update atob
+
 ## 1.2.12
 
 ### Patch Changes
