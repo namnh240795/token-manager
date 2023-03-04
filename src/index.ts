@@ -5,8 +5,8 @@ export interface TokenManagerContructor {
   getRefreshToken: () => Promise<string>;
   isValidToken?: (token: string) => Promise<boolean>;
   isValidRefreshToken?: (refresh_token: string) => Promise<boolean>;
-  executeRefreshToken: () => Promise<{ token: string; refresh_token: string }>;
-  onRefreshTokenSuccess: ({ token, refresh_token }: { token: string; refresh_token: string }) => void;
+  executeRefreshToken?: () => Promise<{ token: string; refresh_token: string }>;
+  onRefreshTokenSuccess?: ({ token, refresh_token }: { token: string; refresh_token: string }) => void;
   onInvalidRefreshToken: () => void;
   refreshTimeout?: number;
 }
@@ -82,6 +82,7 @@ export default class TokenManager {
   private isValidRefreshToken;
   private onRefreshTokenSuccess;
   private isValidToken;
+  private executeRefreshToken;
 
   constructor({
     getRefreshToken,
@@ -99,6 +100,7 @@ export default class TokenManager {
     this.getRefreshToken = getRefreshToken;
     this.onInvalidRefreshToken = onInvalidRefreshToken;
     this.onRefreshTokenSuccess = onRefreshTokenSuccess;
+    this.executeRefreshToken = executeRefreshToken;
 
     if (isValidToken) {
       this.isValidToken = isValidToken;
@@ -141,11 +143,15 @@ export default class TokenManager {
         return;
       }
 
+      if (!this.executeRefreshToken) {
+        return;
+      }
       // fetch
       this.isRefreshing = true;
 
       const evtFire = false;
-      const { token, refresh_token } = await executeRefreshToken();
+      const { token, refresh_token } = await this.executeRefreshToken();
+
       if (token && refresh_token) {
         this.onRefreshTokenSuccess && this.onRefreshTokenSuccess({ token, refresh_token });
       }
