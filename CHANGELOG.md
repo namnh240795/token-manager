@@ -1,5 +1,11 @@
 # brainless-token-manager
 
+## 1.3.1
+
+### Patch Changes
+
+- c9737d3: Update readme
+
 ## 1.3.0
 
 ### Minor Changes
