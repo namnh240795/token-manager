@@ -38,10 +38,10 @@ yarn add brainless-token-manager
 // if you use other tokens JWT. you need to initialize isValidToken and isValidRefreshToken
 interface TokenManagerContructor {
   getAccessToken: () => Promise<string>;
-  getRefreshToken: () => Promise<string>;
-  executeRefreshToken: () => Promise<{ token: string; refresh_token: string }>;
-  onRefreshTokenSuccess: ({ token, refresh_token }: { token: string; refresh_token: string }) => void;
-  onInvalidRefreshToken: () => void;
+  getRefreshToken: () => Promise<string>; // if you don't have refresh token use the same as getAccessToken
+  executeRefreshToken?: () => Promise<{ token: string; refresh_token: string }>;
+  onRefreshTokenSuccess?: ({ token, refresh_token }: { token: string; refresh_token: string }) => void;
+  onInvalidRefreshToken: () => void; // will trigger when refresh token expired
   isValidToken?: (token: string) => Promise<boolean>;
   isValidRefreshToken?: (refresh_token: string) => Promise<boolean>;
   refreshTimeout?: number;
