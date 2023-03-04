@@ -1,5 +1,11 @@
 # brainless-token-manager
 
+## 1.3.0
+
+### Minor Changes
+
+- c8202d9: onRefreshTokenSuccess and executeRefreshToken as optional, use in no refresh token scenario
+
 ## 1.2.14
 
 ### Patch Changes
