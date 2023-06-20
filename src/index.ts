@@ -25,10 +25,16 @@ export type TParseJwt = { exp: number } & {
   [K in string]: any;
 };
 
+enum ERROR {
+  ERROR_PARSER_TOKEN = 'ERROR_PARSER_TOKEN',
+  NOT_FOUND_EXPIRE_TIME = 'NOT_FOUND_EXPIRE_TIME',
+}
+
 export const parseJwt = (token: string): Partial<TParseJwt> => {
   try {
     return JSON.parse(Base64.atob(token.split('.')[1]));
   } catch (e) {
+    console.error(ERROR.ERROR_PARSER_TOKEN);
     return {};
   }
 };
@@ -191,11 +197,16 @@ export default class TokenManager {
   async isTokenValid(token: string) {
     try {
       const decoded = parseJwt(token);
-      const { exp } = decoded;
+
+      if (!decoded?.exp) {
+        console.error(ERROR.NOT_FOUND_EXPIRE_TIME);
+
+        return true;
+      }
 
       const currentTime = Date.now() / 1000;
 
-      if (exp && exp - 5 > currentTime) {
+      if (decoded.exp - 5 > currentTime) {
         return true;
       }
 
