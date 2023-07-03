@@ -1,5 +1,11 @@
 # brainless-token-manager
 
+## 1.3.3
+
+### Patch Changes
+
+- 91081a5: add error logger
+
 ## 1.3.1
 
 ### Patch Changes
